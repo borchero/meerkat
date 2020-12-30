@@ -31,11 +31,22 @@ const (
 // GetDeploymentSpec returns the expected deployment spec for the given server and the provided
 // container image.
 func GetDeploymentSpec(
-	server *api.OvpnServer, image string, podAnnotations map[string]string,
+	server *api.OvpnServer, image string, additionalPodAnnotations map[string]string,
 ) appsv1.DeploymentSpec {
 	var replicas int32 = 1
 	var progressDeadline int32 = 600
 	var revisionLimit int32 = 10
+
+	podAnnotations := map[string]string{}
+	for k, v := range additionalPodAnnotations {
+		podAnnotations[k] = v
+	}
+	if server.Spec.Deployment.PodAnnotations != nil {
+		for k, v := range server.Spec.Deployment.PodAnnotations {
+			podAnnotations[k] = v
+		}
+	}
+
 	return appsv1.DeploymentSpec{
 		Replicas:                &replicas,
 		ProgressDeadlineSeconds: &progressDeadline,

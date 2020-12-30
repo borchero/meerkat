@@ -165,6 +165,8 @@ type OvpnServerDeployment struct {
 	Name string `json:"name,omitempty"`
 	// Custom annotations to set on the deployment.
 	Annotations map[string]string `json:"annotations,omitempty"`
+	// Custom annotations to set on the pod.
+	PodAnnotations map[string]string `json:"podAnnotations,omitempty"`
 	// The name of the configmap to be used for the OpenVPN config. Defaults to
 	// `<servername>-config`.
 	OvpnConfigMapName string `json:"ovpnConfigMapName,omitempty"`

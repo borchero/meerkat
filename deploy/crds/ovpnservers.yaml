@@ -56,6 +56,11 @@ spec:
                     description: The name of the configmap to be used for the OpenVPN
                       config. Defaults to `<servername>-config`.
                     type: string
+                  podAnnotations:
+                    additionalProperties:
+                      type: string
+                    description: Custom annotations to set on the pod.
+                    type: object
                 type: object
               network:
                 description: The network configuration of the VPN server.
