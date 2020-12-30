@@ -80,7 +80,7 @@ jobs:
           git clone git@github.com:borchero/helm-charts.git
 
           export DST=helm-charts/charts/meerkat-operator@${CIRCLE_TAG}
-          mv project/deploy/chart ${DST}
+          mv project/deploy ${DST}
 
           envsubst < ${DST}/values.yaml > ${DST}/values.subst.yaml
           mv ${DST}/values.subst.yaml ${DST}/values.yaml
