@@ -7,9 +7,9 @@ const TemplateEntrypoint = `
 set -o errexit
 
 iptables -t nat -A POSTROUTING -s 192.168.255.0/255.255.255.0 -o eth0 -j MASQUERADE
-{{ range .Routes }}
+{{ range .Routes -}}
 iptables -t nat -A POSTROUTING -s {{ . }} -o eth0 -j MASQUERADE
-{{ end }}
+{{ end -}}
 
 mkdir -p /dev/net
 if [ ! -c /dev/net/tun ]; then
