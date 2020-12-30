@@ -82,8 +82,14 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build-server-image
-      - build-operator-image
+      - build-server-image:
+          filters:
+            tags:
+              only: /.*/
+      - build-operator-image:
+          filters:
+            tags:
+              only: /.*/
       - upload-server-image:
           requires:
             - build-server-image
