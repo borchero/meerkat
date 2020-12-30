@@ -87,7 +87,7 @@ func (r *OvpnServerReconciler) Reconcile(
 	ctx context.Context, req ctrl.Request,
 ) (ctrl.Result, error) {
 	logger := r.logger.With(zap.String("name", req.String()))
-	logger.Debug("starting reconciliation")
+	logger.Info("starting reconciliation")
 
 	// First, we get the server - if it cannot be found, we return no error
 	server := &api.OvpnServer{}
@@ -197,6 +197,7 @@ func (r *OvpnServerReconciler) updateSharedSecret(
 	}
 
 	// Otherwise, we need to generate them
+	logger.Info("generating DH parameters, this will take a long time")
 	bits := server.Spec.Security.DiffieHellmanBits
 	if bits == 0 {
 		bits = 2048
