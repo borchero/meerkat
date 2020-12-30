@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
-
 metadata:
   name: {{ include "serviceAccount.name" . }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-cluster-binding
 
 subjects:
   - kind: ServiceAccount
@@ -20,6 +21,8 @@ roleRef:
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-binding
 
 subjects:
   - kind: ServiceAccount
