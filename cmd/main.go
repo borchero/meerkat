@@ -8,7 +8,6 @@ import (
 	"github.com/borchero/meerkat-operator/pkg/crypto"
 	vaultapi "github.com/hashicorp/vault/api"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/markbates/pkger"
 	"go.uber.org/zap"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -25,10 +24,6 @@ type environment struct {
 }
 
 func main() {
-	pkger.Include("/cmd/templates/client.ovpn.tpl")
-	pkger.Include("/cmd/templates/entrypoint.sh.tpl")
-	pkger.Include("/cmd/templates/openvpn.conf.tpl")
-
 	// Setup
 	var env environment
 	envconfig.MustProcess("", &env)

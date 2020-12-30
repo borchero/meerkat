@@ -6,15 +6,12 @@ ENV CGO_ENABLED=0 \
     GOARCH=amd64 \
     GO111MODULE=on
 
-COPY go.mod /app/go.mod
-COPY hack.go /app/hack.go
-COPY cmd/main.go /app/cmd/main.go
-COPY cmd/templates cmd/templates
-COPY pkg /app/pkg
+COPY go.mod go.mod
+COPY hack.go hack.go
+COPY cmd/main.go cmd/main.go
+COPY pkg pkg
 
-RUN go get github.com/markbates/pkger/cmd/pkger \
-    && pkger -o cmd
-RUN go build -a -o /app/operator cmd/main.go
+RUN go build -a -o operator cmd/main.go
 
 #--------------------------------------------------------------------------------------------------
 

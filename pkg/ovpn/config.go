@@ -1,5 +1,7 @@
 package ovpn
 
+import "github.com/borchero/meerkat-operator/pkg/ovpn/static"
+
 // ConfigValues describes the set of values required to render the OVPN config file.
 type ConfigValues struct {
 	Files       ConfigFiles
@@ -34,5 +36,5 @@ type ConfigSecurity struct {
 
 // GetConfig returns a OVPN config for the given files and configuration.
 func GetConfig(values ConfigValues) (string, error) {
-	return renderTemplate("config", "/cmd/templates/openvpn.conf.tpl", values)
+	return renderTemplate("config", static.TemplateConfig, values)
 }

@@ -1,3 +1,7 @@
+package static
+
+// TemplateClient contains the template for the OVPN client file.
+const TemplateClient = `
 client
 nobind
 dev tun
@@ -20,3 +24,4 @@ remote {{ .Host }} {{ .Port }} {{ .Protocol | lower }}
 
 auth {{ .Security.Hmac }}
 cipher {{ .Security.Cipher }}
+`

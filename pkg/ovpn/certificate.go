@@ -1,5 +1,7 @@
 package ovpn
 
+import "github.com/borchero/meerkat-operator/pkg/ovpn/static"
+
 // CertificateValues describes the set of values required to render OVPN certificates.
 type CertificateValues struct {
 	Secrets  CertificateSecrets
@@ -19,5 +21,5 @@ type CertificateSecrets struct {
 
 // GetCertificate generates the OVPN certificate file that is given to the clients.
 func GetCertificate(values CertificateValues) (string, error) {
-	return renderTemplate("certificate", "/cmd/templates/client.ovpn.tpl", values)
+	return renderTemplate("certificate", static.TemplateClient, values)
 }

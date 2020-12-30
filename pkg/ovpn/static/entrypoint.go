@@ -1,3 +1,7 @@
+package static
+
+// TemplateEntrypoint contains the template for the OVPN server entrypoint.
+const TemplateEntrypoint = `
 #!/bin/sh
 
 set -o errexit
@@ -14,3 +18,4 @@ fi
 
 # Exec to receive termination signals
 exec openvpn --config /etc/openvpn/openvpn.conf
+`

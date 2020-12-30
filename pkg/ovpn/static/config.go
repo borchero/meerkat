@@ -1,3 +1,7 @@
+package static
+
+// TemplateConfig includes the template for the OVPN server config file.
+const TemplateConfig = `
 user nobody
 group nogroup
 
@@ -38,3 +42,4 @@ push "dhcp-option DNS {{ . }}"
 {{- if .RedirectAll -}}
 push "redirect-gateway def1"
 {{- end -}}
+`

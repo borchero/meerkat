@@ -3,27 +3,14 @@ package ovpn
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/markbates/pkger"
 )
 
-func renderTemplate(name, path string, values interface{}) (string, error) {
-	f, err := pkger.Open(path)
-	if err != nil {
-		return "", fmt.Errorf("failed to load template: %s", err)
-	}
-	defer f.Close()
-
-	buf, err := ioutil.ReadAll(f)
-	if err != nil {
-		return "", fmt.Errorf("failed to read template: %s", err)
-	}
-
+func renderTemplate(name, templateString string, values interface{}) (string, error) {
 	// And render it
-	t, err := template.New(name).Funcs(sprig.TxtFuncMap()).Parse(string(buf))
+	t, err := template.New(name).Funcs(sprig.TxtFuncMap()).Parse(templateString)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse template: %s", err)
 	}
