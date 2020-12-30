@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	vaultapi "github.com/hashicorp/vault/api"
@@ -35,7 +36,6 @@ func EnsureTokenUpdated(
 	wg.Add(1)
 
 	go func() {
-		setTokenFromFile(client, target, logger)
 	loop:
 		for {
 			select {
@@ -58,8 +58,18 @@ func EnsureTokenUpdated(
 		wg.Done()
 	}()
 
-	if err := watcher.Add(target); err != nil {
-		logger.Error("failed to add file to file watcher", zap.Error(err))
+	for i := 0; i < 16; i++ {
+		if err := watcher.Add(target); err != nil {
+			logger.Error("failed to add file to file watcher, retrying", zap.Error(err))
+			select {
+			case <-ctx.Done():
+				break
+			case <-time.After(time.Second << i):
+				continue
+			}
+		}
+		setTokenFromFile(client, target, logger)
+		break
 	}
 	wg.Wait()
 }
@@ -70,6 +80,6 @@ func setTokenFromFile(client *vaultapi.Client, target string, logger *zap.Logger
 		logger.Warn("failed to read file containing client token", zap.Error(err))
 	} else {
 		client.SetToken(strings.Trim(string(content), " \n\t"))
-		logger.Debug("successfully set new client token")
+		logger.Info("successfully set new client token")
 	}
 }
