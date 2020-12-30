@@ -1,9 +1,13 @@
 version: 2.1
 
-jobs:
-  build-server-image:
+executors:
+  docker:
     docker:
       - image: circleci/buildpack-deps:stretch
+
+jobs:
+  build-server-image:
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -11,10 +15,14 @@ jobs:
           docker build \
             -t ghcr.io/borchero/meerkat/server:latest \
             -f build/docker/server.Dockerfile .
+      - run: docker save -o image.tar ghcr.io/borchero/meerkat/server:latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
 
   build-operator-image:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -22,13 +30,20 @@ jobs:
           docker build \
             -t ghcr.io/borchero/meerkat/operator:latest \
             -f build/docker/operator.Dockerfile .
+      - run: docker save -o image.tar ghcr.io/borchero/meerkat/operator:latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
 
   upload-server-image:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: docker load -i /tmp/workspace/image.tar
       - run: echo $DOCKER_PASSWORD | docker login ghcr.io -u $DOCKER_USERNAME --password-stdin
       - run: |
           docker tag \
@@ -38,11 +53,13 @@ jobs:
       - run: docker push ghcr.io/borchero/meerkat/server:${CIRCLE_TAG}
 
   upload-operator-image:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: docker load -i /tmp/workspace/image.tar
       - run: echo $DOCKER_PASSWORD | docker login ghcr.io -u $DOCKER_USERNAME --password-stdin
       - run: |
           docker tag \
