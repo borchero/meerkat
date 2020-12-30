@@ -25,7 +25,7 @@ import (
 
 // +kubebuilder:rbac:groups=meerkat.borchero.com,resources=ovpnservers,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=meerkat.borchero.com,resources=ovpnservers/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=core,resources=secrets;configmaps;deployments;services,verbs=get;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=core,resources=secrets;configmaps;deployments;services,verbs=get;list;watch;create;update;patch;delete
 
 // OvpnServerReconciler reconciles OvpnServer objects.
 type OvpnServerReconciler struct {
