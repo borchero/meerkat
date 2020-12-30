@@ -49,7 +49,7 @@ Once the operator is running, you can install the custom resources, creating a s
 clients. Have a look at the [example manifests](./tests/manifests).
 
 Once a client is created, there exists a secret with the client's name, containing the client's
-OVPN certificate. It can be retrieved by using kubectl:
+OVPN certificate. It can be retrieved by using `kubectl`:
 
 ```bash
 kubectl get secret <SECRET_NAME> -o json | jq -r '.data."certificate.ovpn"' | base64 -d
