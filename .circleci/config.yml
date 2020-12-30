@@ -2,42 +2,54 @@ version: 2.1
 
 jobs:
   build-server-image:
-    working_directory: ~/project
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
       - checkout
       - setup_remote_docker
-      - run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       - run: |
           docker build \
-            -t ghcr.io/borchero/meerkat/server:${CIRCLE_TAG} \
+            -t ghcr.io/borchero/meerkat/server:latest \
             -f build/docker/server.Dockerfile .
-      - run: |
-          docker tag \
-            ghcr.io/borchero/meerkat/server:${CIRCLE_TAG} \
-            ghcr.io/borchero/meerkat/server:latest
-      - run: docker push ghcr.io/borchero/meerkat/server:${CIRCLE_TAG}
-      - run: docker push ghcr.io/borchero/meerkat/server:latest
 
   build-operator-image:
-    working_directory: ~/project
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
       - checkout
       - setup_remote_docker
-      - run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       - run: |
           docker build \
-            -t ghcr.io/borchero/meerkat/operator:${CIRCLE_TAG} \
+            -t ghcr.io/borchero/meerkat/operator:latest \
             -f build/docker/operator.Dockerfile .
+
+  upload-server-image:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: echo $DOCKER_PASSWORD | docker login ghcr.io -u $DOCKER_USERNAME --password-stdin
       - run: |
           docker tag \
-            ghcr.io/borchero/meerkat/operator:${CIRCLE_TAG} \
-            ghcr.io/borchero/meerkat/operator:latest
-      - run: docker push ghcr.io/borchero/meerkat/operator:${CIRCLE_TAG}
+            ghcr.io/borchero/meerkat/server:latest \
+            ghcr.io/borchero/meerkat/server:${CIRCLE_TAG}
+      - run: docker push ghcr.io/borchero/meerkat/server:latest
+      - run: docker push ghcr.io/borchero/meerkat/server:${CIRCLE_TAG}
+
+  upload-operator-image:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: echo $DOCKER_PASSWORD | docker login ghcr.io -u $DOCKER_USERNAME --password-stdin
+      - run: |
+          docker tag \
+            ghcr.io/borchero/meerkat/operator:latest \
+            ghcr.io/borchero/meerkat/operator:${CIRCLE_TAG}
       - run: docker push ghcr.io/borchero/meerkat/operator:latest
+      - run: docker push ghcr.io/borchero/meerkat/operator:${CIRCLE_TAG}
 
   upload-chart:
     docker:
@@ -72,7 +84,26 @@ workflows:
     jobs:
       - build-server-image
       - build-operator-image
+      - upload-server-image:
+          requires:
+            - build-server-image
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - upload-operator-image:
+          requires:
+            - build-operator-image
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
       - upload-chart:
+          requires:
+            - upload-server-image
+            - upload-operator-image
           filters:
             branches:
               ignore: /.*/
