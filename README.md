@@ -48,6 +48,13 @@ You can also leave all of these fields blank and they choose sensitive defaults.
 Once the operator is running, you can install the custom resources, creating a server and your
 clients. Have a look at the [example manifests](./tests/manifests).
 
+Once a client is created, there exists a secret with the client's name, containing the client's
+OVPN certificate. It can be retrieved by using kubectl:
+
+```bash
+kubectl get secret <SECRET_NAME> -o json | jq -r '.data."certificate.ovpn"' | base64 -d
+```
+
 ## License
 
 Meerkat is licensed under the [MIT License](./LICENSE).
