@@ -17,7 +17,7 @@ vault:
     type: kubernetes
     mountPath: auth/kubernetes
     config:
-      role: meerkat-operator
+      role: meerkat
   agent:
     image: 
       name: vault
