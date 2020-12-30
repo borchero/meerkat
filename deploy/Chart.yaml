@@ -1,0 +1,14 @@
+apiVersion: v2
+type: application
+name: meerkat
+version: ${CIRCLE_TAG}
+description: Kubernetes Operator for a Cloud-Native OpenVPN Deployment.
+maintainers:
+  - name: Oliver Borchert
+    email: borchero@icloud.com
+keywords:
+  - operator
+  - vpn
+  - openvpn
+  - security
+  - vault

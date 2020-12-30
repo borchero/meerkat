@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  updateStrategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "serviceAccount.name" . }}
+      containers:
+        - name: operator
+          image: {{ .Values.operator.image.name }}:{{ .Values.operator.image.tag }}
+          env:
+            {{ if .Values.operator.debug }}
+            - name: DEBUG
+              value: "true"
+            {{ end }}
+            - name: VAULT_ADDR
+              value: {{ .Values.vault.address | quote }}
+            {{ if .Values.vault.caCrt }}
+            - name: VAULT_CA_CRT
+              value: {{ .Values.vault.caCrt }}
+            {{ end }}
+            - name: VAULT_TOKEN_MOUNT
+              value: /vault/secrets/token
+            - name: SERVER_IMAGE
+              value: {{ .Values.ovpn.image.name }}:{{ .Values.ovpn.image.tag }}
+            - name: SERVER_PKI_PATH
+              value: {{ .Values.vault.pkiPath }}
+          volumeMounts:
+            - name: agent-secrets
+              mountPath: /vault/secrets
+
+        - name: vault-agent
+          image: {{ .Values.vault.agent.image.name }}:{{ .Values.vault.agent.image.tag }}
+          command: ["/bin/sh", "-ec"]
+          args: ["{{ include "vault.agent.args" . }}"]
+          env:
+            - name: VAULT_LOG_LEVEL
+              value: info
+            - name: VAULT_CONFIG
+              value: |
+                {{ include "vault.agent.config" . | indent 16 | trim }}
+          volumeMounts:
+            - name: agent-home
+              mountPath: /home/vault
+            - name: agent-secrets
+              mountPath: /vault/secrets
+
+      volumes:
+        - name: agent-home
+          emptyDir:
+            medium: Memory
+        - name: agent-secrets
+          emptyDir:
+            medium: Memory

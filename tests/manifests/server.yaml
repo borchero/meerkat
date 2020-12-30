@@ -1,0 +1,7 @@
+apiVersion: meerkat.borchero.com/v1alpha1
+kind: OvpnServer
+metadata:
+  name: test
+spec:
+  network:
+    host: vpn.borchero.com

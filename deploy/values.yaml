@@ -1,0 +1,27 @@
+operator:
+  image:
+    name: ghcr.io/borchero/meerkat/operator
+    tag: ${CIRCLE_TAG}
+  debug: false
+
+ovpn:
+  image:
+    name: ghcr.io/borchero/meerkat/server
+    tag: ${CIRCLE_TAG}
+
+vault:
+  address: https://localhost:8200
+  caCrt: ~
+  pkiPath: meerkat
+  auth:
+    type: kubernetes
+    mountPath: auth/kubernetes
+    config:
+      role: meerkat-operator
+  agent:
+    image: 
+      name: vault
+      tag: 1.6.0
+
+rbac:
+  serviceAccountName: ~

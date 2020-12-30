@@ -1,0 +1,266 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: ovpnservers.meerkat.borchero.com
+spec:
+  group: meerkat.borchero.com
+  names:
+    kind: OvpnServer
+    listKind: OvpnServerList
+    plural: ovpnservers
+    singular: ovpnserver
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: OvpnServer defines the schema for the OVPN server.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: OvpnServerSpec defines the configuration of an OVPN server.
+            properties:
+              deployment:
+                description: The deployment configuration of the VPN server.
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Custom annotations to set on the deployment.
+                    type: object
+                  entrypointConfigMapName:
+                    description: The name of the configmap to carry the OpenVPN setup.
+                      Defaults to `<servername>-entrypoint`.
+                    type: string
+                  name:
+                    description: The name of the deployment. Defaults to the name
+                      of the server.
+                    type: string
+                  ovpnConfigMapName:
+                    description: The name of the configmap to be used for the OpenVPN
+                      config. Defaults to `<servername>-config`.
+                    type: string
+                type: object
+              network:
+                description: The network configuration of the VPN server.
+                properties:
+                  host:
+                    description: The host where the server is reachable at. Will also
+                      be used as the common name of the server certificate.
+                    type: string
+                  protocol:
+                    default: UDP
+                    description: The protocol used for the OVPN server.
+                    enum:
+                    - TCP
+                    - UDP
+                    type: string
+                required:
+                - host
+                type: object
+              secrets:
+                description: The secrets used by the server.
+                properties:
+                  crlName:
+                    description: The name of the secret containing the CRL. Defaults
+                      to `<servername>-crl`.
+                    type: string
+                  serverCertificateName:
+                    description: The name of the secret to use for the certificate
+                      used by the server. Defaults to `<servername>-server-certificate`.
+                    type: string
+                  sharedSecretName:
+                    description: The name for the secret to use for shared secrets
+                      (DH params and TLS auth). The default is `<servername>-shared-secrets`.
+                    type: string
+                type: object
+              security:
+                description: The security configuration of the VPN server.
+                properties:
+                  cipher:
+                    default: AES-256-GCM
+                    description: The TLS cipher to use.
+                    enum:
+                    - AES-256-GCM
+                    type: string
+                  clients:
+                    description: The default configuration for the client certificates.
+                    properties:
+                      rsaBits:
+                        default: 4096
+                        description: The number of bits to use for the root RSA key.
+                          Changing this value for existing keys (such as the root
+                          key) has no effect.
+                        enum:
+                        - 2048
+                        - 4096
+                        - 8192
+                        type: integer
+                      validity:
+                        description: The duration for which the certificate is valid.
+                          Defaults to 10 years for the root key, 90 days for the server
+                          and 2 years for client.
+                        type: string
+                    type: object
+                  diffieHellmanBits:
+                    default: 2048
+                    description: The number of bits to use for the Diffie Hellman
+                      parameters.
+                    enum:
+                    - 1024
+                    - 2048
+                    - 4096
+                    type: integer
+                  hmac:
+                    default: SHA-384
+                    description: The message digest algorithm to use.
+                    enum:
+                    - SHA-384
+                    type: string
+                  pki:
+                    description: The configuration of the PKI.
+                    properties:
+                      dn:
+                        description: The configuration for the distinguished name.
+                        properties:
+                          commonName:
+                            description: The common name for the PKI.
+                            type: string
+                          country:
+                            description: The country code.
+                            type: string
+                          locality:
+                            description: The location of the organization within the
+                              country.
+                            type: string
+                          organization:
+                            description: The name of the organization.
+                            type: string
+                          organizationalUnit:
+                            description: The unit within the defined organization.
+                            type: string
+                        type: object
+                      rsaBits:
+                        default: 4096
+                        description: The number of bits to use for the root RSA key.
+                          Changing this value for existing keys (such as the root
+                          key) has no effect.
+                        enum:
+                        - 2048
+                        - 4096
+                        - 8192
+                        type: integer
+                      validity:
+                        description: The duration for which the certificate is valid.
+                          Defaults to 10 years for the root key, 90 days for the server
+                          and 2 years for client.
+                        type: string
+                    type: object
+                  server:
+                    description: The configuration for the server certificates.
+                    properties:
+                      rsaBits:
+                        default: 4096
+                        description: The number of bits to use for the root RSA key.
+                          Changing this value for existing keys (such as the root
+                          key) has no effect.
+                        enum:
+                        - 2048
+                        - 4096
+                        - 8192
+                        type: integer
+                      validity:
+                        description: The duration for which the certificate is valid.
+                          Defaults to 10 years for the root key, 90 days for the server
+                          and 2 years for client.
+                        type: string
+                    type: object
+                type: object
+              service:
+                description: The service configuration for the VPN server.
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Custom annotations to set on the service.
+                    type: object
+                  name:
+                    description: The name of the service. Defaults to the name of
+                      the server.
+                    type: string
+                  port:
+                    default: 1194
+                    description: The port that the server should be running on. For
+                      `serviceType` set to `NodePort`, this value must be in the range
+                      [30000, 32767].
+                    type: integer
+                  serviceType:
+                    default: LoadBalancer
+                    description: The type for the Kubernetes servce.
+                    enum:
+                    - LoadBalancer
+                    - NodePort
+                    type: string
+                type: object
+              traffic:
+                description: The traffic configuration of the VPN server.
+                properties:
+                  nameservers:
+                    default:
+                    - 8.8.4.4
+                    - 8.8.8.8
+                    description: Defines a list of nameservers to use for name resolution.
+                    items:
+                      description: IPv4Address defines an IPv4 address.
+                      format: ipv4
+                      type: string
+                    type: array
+                  redirectAll:
+                    default: false
+                    description: Whether all traffic should be routed through the
+                      VPN.
+                    type: boolean
+                  routes:
+                    description: Defines a list of (target) IP ranges for which traffic
+                      is routed through the VPN. Ignored if `redirectAll` is set.
+                    items:
+                      description: SubnetMask defines an IPv4 range in the form <ip>/<bits>.
+                      pattern: ^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/((3[0-2])|([1-2][0-9])|[1-9])$
+                      type: string
+                    type: array
+                type: object
+            required:
+            - network
+            type: object
+          status:
+            description: OvpnServerStatus describes the status of an OVPN server.
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

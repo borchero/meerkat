@@ -1,0 +1,6 @@
+.vscode
+go.sum
+/bin
+cmd/pkged.go
+tests/env/*
+!tests/env/.gitkeep

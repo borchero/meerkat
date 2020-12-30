@@ -1,0 +1,7 @@
+apiVersion: meerkat.borchero.com/v1alpha1
+kind: OvpnClient
+metadata:
+  name: foo
+spec:
+  serverName: test
+  commonName: foo@borchero.com
