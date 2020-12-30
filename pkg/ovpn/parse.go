@@ -34,7 +34,7 @@ func getMask(stringSize string) string {
 	if err != nil {
 		panic(err)
 	}
-	mask := 0xFFFFFFFF << size
+	mask := 0xFFFFFFFF << (32 - size)
 	limbs := []string{
 		strconv.Itoa((mask >> 24) & 0xFF),
 		strconv.Itoa((mask >> 16) & 0xFF),

@@ -6,9 +6,9 @@ user nobody
 group nogroup
 
 status /tmp/openvpn.log
-{{- if eq .Protocol "UDP" -}}
+{{ if eq .Protocol "UDP" }}
 explicit-exit-notify 1
-{{- end -}}
+{{ end }}
 
 server 192.168.255.0 255.255.255.0
 port 1194
@@ -32,14 +32,14 @@ persist-tun
 verb 3
 
 push "route 192.168.255.0 255.255.255.0"
-{{- range .Routes }}
+{{ range .Routes }}
 push "route {{ .IP }} {{ .Mask }}"
-{{- end }}
-{{- range .Nameservers }}
+{{ end }}
+{{ range .Nameservers }}
 push "dhcp-option DNS {{ . }}"
-{{- end }}
+{{ end }}
 
-{{- if .RedirectAll -}}
+{{ if .RedirectAll }}
 push "redirect-gateway def1"
-{{- end -}}
+{{ end }}
 `
