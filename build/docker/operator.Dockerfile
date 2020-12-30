@@ -7,7 +7,6 @@ ENV CGO_ENABLED=0 \
     GO111MODULE=on
 
 COPY go.mod go.mod
-COPY hack.go hack.go
 COPY cmd/main.go cmd/main.go
 COPY pkg pkg
 
