@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   replicas: 1
-  updateStrategy:
+  strategy:
     type: Recreate
   selector:
     matchLabels:
