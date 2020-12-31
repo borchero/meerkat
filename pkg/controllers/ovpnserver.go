@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"path/filepath"
 	"time"
@@ -252,7 +251,7 @@ func (r *OvpnServerReconciler) updatePKI(
 	op, err := ctrl.CreateOrUpdate(ctx, r, secret, func() error {
 		secret.Annotations = map[string]string{}
 		secret.Data = map[string][]byte{
-			secretKeyCrl: []byte(base64.StdEncoding.EncodeToString([]byte(crl.Certificate))),
+			secretKeyCrl: []byte(crl.Certificate),
 		}
 		return ctrl.SetControllerReference(server, secret, r.scheme)
 	})
@@ -302,11 +301,9 @@ func (r *OvpnServerReconciler) updateServerCertificate(
 			annotationKeyExpiresAt: expiresAt,
 		}
 		secret.Data = map[string][]byte{
-			secretKeyServerCrt: []byte(base64.StdEncoding.EncodeToString([]byte(cert.Certificate))),
-			secretKeyServerKey: []byte(base64.StdEncoding.EncodeToString([]byte(cert.PrivateKey))),
-			secretKeyCaCrt: []byte(
-				base64.StdEncoding.EncodeToString([]byte(cert.CACertificate)),
-			),
+			secretKeyServerCrt: []byte(cert.Certificate),
+			secretKeyServerKey: []byte(cert.PrivateKey),
+			secretKeyCaCrt:     []byte(cert.CACertificate),
 		}
 		return ctrl.SetControllerReference(server, secret, r.scheme)
 	})
