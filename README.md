@@ -40,7 +40,7 @@ helm install meerkat borchero/meerkat \
     --set vault.pkiPath=${PKI_PATH}
 ```
 
-You can also leave all of these fields blank and they choose sensitive defaults. Consult the
+You can also leave all of these fields blank and they choose sensible defaults. Consult the
 [values file](./deploy/values.yaml) for further details.
 
 ### Custom Resources
