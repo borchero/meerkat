@@ -9,17 +9,17 @@ remote-cert-tls server
 remote {{ .Host }} {{ .Port }} {{ .Protocol | lower }}
 
 <key>
-{{ .Secrets.TLSClientKey }}
+{{ .Secrets.TLSClientKey | trim }}
 </key>
 <cert>
-{{ .Secrets.TLSClientCrt }}
+{{ .Secrets.TLSClientCrt | trim }}
 </cert>
 <ca>
-{{ .Secrets.TLSCaCrt }}
+{{ .Secrets.TLSCaCrt | trim }}
 </ca>
 
 <tls-crypt>
-{{ .Secrets.TLSAuth }}
+{{ .Secrets.TLSAuth | trim }}
 </tls-crypt>
 
 auth {{ .Security.Hmac }}

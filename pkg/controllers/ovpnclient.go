@@ -162,6 +162,10 @@ func (r *OvpnClientReconciler) revokeCertificate(
 	server := &api.OvpnServer{}
 	serverRef := ctclient.ObjectKey{Name: client.Spec.ServerName, Namespace: client.Namespace}
 	if err := r.Get(ctx, serverRef, server); err != nil {
+		if apierrors.IsNotFound(err) {
+			// If the server cannot be found, we don't need to revoke anything so we're done
+			return nil
+		}
 		return fmt.Errorf("failed to get server associated with client: %s", err)
 	}
 

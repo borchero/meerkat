@@ -32,6 +32,6 @@ func PKIClientConfig(server *api.OvpnServer) crypto.PKIRoleConfig {
 	return crypto.PKIRoleConfig{
 		DefaultValidity: server.Spec.Security.Clients.DefaultedValidity(),
 		RSABits:         server.Spec.Security.Clients.DefaultedRSABits(),
-		Server:          true,
+		Server:          false,
 	}
 }
